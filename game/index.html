@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Porchlight: a Halloween costume puzzle game</title>
+<meta name="description" content="Trick-or-treat across a sprawling pixel-art town. Work out which of 50 costumes each house loves, bribe other kids to swap outfits, and light every jack-o'-lantern on the block.">
+<link rel="canonical" href="https://porchlight.synapticnoise.com/">
+<meta name="theme-color" content="#1b1533">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://porchlight.synapticnoise.com/">
+<meta property="og:title" content="Porchlight">
+<meta property="og:description" content="Match the costume. Light the jack. A cozy Halloween puzzle game with 50 costumes to collect.">
+<meta property="og:image" content="https://porchlight.synapticnoise.com/social-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Porchlight title art: costumed kids on a moonlit street full of glowing jack-o'-lanterns">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Porchlight">
+<meta name="twitter:description" content="Match the costume. Light the jack. A cozy Halloween puzzle game with 50 costumes to collect.">
+<meta name="twitter:image" content="https://porchlight.synapticnoise.com/social-card.jpg">
+<meta name="twitter:image:alt" content="Porchlight title art: costumed kids on a moonlit street full of glowing jack-o'-lanterns">
+<style>
+  @font-face { font-family: 'Pixelify'; src: url('fonts/PixelifySans.ttf') format('truetype'); font-display: block; }
+  html, body { margin: 0; height: 100%; background: #0e0b1c; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; overscroll-behavior: none; }
+  canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: block; image-rendering: pixelated; touch-action: none; outline: none; }
+  #safe { position: fixed; inset: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); pointer-events: none; visibility: hidden; }
+  #safe > div { width: 100%; height: 100%; }
+  #touch { display: none; }
+  body.touch.playing #touch { display: block; }
+  body.dialog #touch { display: none; }
+  .tbtn { position: fixed; border-radius: 50%; border: 3px solid rgba(255, 210, 94, .75); background: rgba(27, 21, 51, .55); color: #ffd25e; font: 22px 'Pixelify', sans-serif; display: flex; align-items: center; justify-content: center; touch-action: none; }
+  .tbtn.down { background: rgba(240, 138, 36, .6); }
+  #btnA { width: 78px; height: 78px; right: calc(env(safe-area-inset-right) + 20px); bottom: calc(env(safe-area-inset-bottom) + 22px); font-size: 30px; }
+  #btnB { width: 64px; height: 64px; right: calc(env(safe-area-inset-right) + 108px); bottom: calc(env(safe-area-inset-bottom) + 70px); font-size: 15px; }
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffd25e; font: 20px 'Pixelify', sans-serif; }
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0"></canvas>
+<div id="safe"><div id="safeInner"></div></div>
+<div id="touch">
+  <div class="tbtn" id="btnB">PWR</div>
+  <div class="tbtn" id="btnA">A</div>
+</div>
+<div id="loading">Carving pumpkins…</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
