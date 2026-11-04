@@ -37,6 +37,15 @@
   #btnA { width: 78px; height: 78px; right: calc(env(safe-area-inset-right) + 20px); bottom: calc(env(safe-area-inset-bottom) + 22px); font-size: 30px; }
   #btnB { width: 64px; height: 64px; right: calc(env(safe-area-inset-right) + 108px); bottom: calc(env(safe-area-inset-bottom) + 70px); font-size: 15px; }
   #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffd25e; font: 20px 'Pixelify', sans-serif; }
+  .tlink { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 10px); display: none; padding: 4px 6px; font: 13px 'Pixelify', sans-serif; color: #b0a8c8; text-decoration: none; text-shadow: 0 1px 2px rgba(14, 11, 28, .9); opacity: .7; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  body.title .tlink { display: block; }
+  .tlink:focus-visible { opacity: 1; color: #ffd25e; text-decoration: underline; outline: none; }
+  @media (hover: hover) { .tlink:hover { opacity: 1; color: #ffd25e; text-decoration: underline; } }
+  #linkSite { left: calc(env(safe-area-inset-left) + 12px); }
+  #linkGit { right: calc(env(safe-area-inset-right) + 12px); }
+  @media (pointer: coarse), (max-width: 600px) { .tlink { font-size: 11px; padding: 6px; } }
+  /* narrow screens: sit just above the progress bar at the bottom of the title */
+  @media (max-width: 600px) { .tlink { bottom: calc(env(safe-area-inset-bottom) + 40px); } }
 </style>
 </head>
 <body>
@@ -47,6 +56,8 @@
   <div class="tbtn" id="btnA">A</div>
 </div>
 <div id="loading">Carving pumpkins…</div>
+<a class="tlink" id="linkSite" href="https://synapticnoise.com/">synapticnoise.com</a>
+<a class="tlink" id="linkGit" href="https://github.com/zeveck/porchlight" target="_blank" rel="noopener" title="Porchlight on GitHub: how it was made" aria-label="Porchlight on GitHub: how it was made">GitHub</a>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

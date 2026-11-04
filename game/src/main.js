@@ -70,6 +70,7 @@ const EVENT_SFX = { knock: 'knock', close: 'close', meh: 'meh', eww: 'eww', empt
 function go(screen) {
   G.screen = screen; G.fade = 1; ui.focus = null;
   document.body.classList.toggle('playing', screen === 'play');
+  document.body.classList.toggle('title', screen === 'title');
   input.stickEnabled = screen === 'play';
   document.body.classList.remove('dialog');
   if (screen !== 'play') { input.stick.active = false; input.stick.x = input.stick.y = 0; }
@@ -519,6 +520,12 @@ document.addEventListener('visibilitychange', () => {
   else if (G.audioStarted) audioCtx()?.resume?.();
 });
 addEventListener('blur', () => { if (G.screen === 'play') { go('pause'); duckMusic(true); } });
+
+// Title-screen links: they open their page and nothing else reaches the game.
+for (const a of document.querySelectorAll('.tlink')) {
+  for (const ev of ['pointerdown', 'pointerup', 'mousedown', 'touchstart', 'click']) a.addEventListener(ev, e => e.stopPropagation());
+  a.addEventListener('click', () => setTimeout(() => a.blur(), 0));
+}
 
 // ---------- boot ----------
 const btnA = document.getElementById('btnA'), btnB = document.getElementById('btnB');
