@@ -63,6 +63,7 @@ Desktop:
 | Mute | M | sound button |
 | Dialog choices | ←/→ or 1/2, Space to pick, Esc to back out | click |
 | Skip the finale dance | Esc | skip button |
+| Report a bug | Ctrl+Shift+F (F is no game key; Ctrl/Cmd combos are ignored by the game) | "Report a bug" on the title and pause menus |
 
 Touch (shown only on touch devices):
 
@@ -423,3 +424,13 @@ past $15 before the reserve, later retries drop to medium quality.
 - [ ] Progress (wardrobe, jacks, clues, nights, lifetime candy) is saved and restored.
 - [ ] Pausing, tab switching and resizing mid-night work.
 - [ ] Installs as an app and works offline (`?sw=1` check).
+
+## Bug reports (Feedback: on)
+
+"Report a bug" sits on the title menu (under How to play) and at the bottom of the pause menu, drawn like
+the other menu buttons (keyboard, mouse and touch). It opens the bundled gh-feedback form
+(`game/vendor/gh-feedback.js`, dark theme, the game's purple panels and orange accent), which files a GitHub
+issue on zeveck/porchlight in the player's own account. Ctrl+Shift+F opens it from anywhere (listed on the
+How to play pages on desktop); it pauses a night first. The screenshot is the last play frame, taken as the
+game pauses. While the form has focus the game ignores keys and touches; the game also ignores keys pressed
+with Ctrl or Cmd held, so the Shift in the shortcut never fires a costume power.

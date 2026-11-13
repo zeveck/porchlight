@@ -78,6 +78,8 @@ the candy haul.
 - On a phone, drag anywhere on the left side to walk, and tap **A** to knock
   or trade. It works held sideways or upright. You can install it from your
   browser's menu to play full screen, even offline.
+- Found a bug? Pause and pick "Report a bug", or press Ctrl+Shift+F (you'll
+  need a GitHub account).
 
 The sign on a pumpkin shows the *kind* of costume the house loves. Knock in a
 close costume (the same kind or the same color) and they'll tell you the exact
@@ -96,13 +98,18 @@ the music, the sound effects and every line of code came from this one command:
 
 > /gg:gamegen I want a game about Halloween in which you select from a small collection of costumes and go trick or treating around a large down, probably pixely, maybe 3/4 overhead view. The town should have dozens of houses. Each house likes a given costume more/less and you get more/better candy the more they like your costume. A bunch of other kids are also trick-or-treating. You can bribe other kids to swap costumes if you have enough candy, and once you gain a costume its in your initial set next time you play. Costumes have powers and some costumes cost more than othes. There should probably be like 50 total costumes, though maybe any given run of the game only includes 20-50 with more as levels get harder. Costumes can repeat a bit, maybe with color swaps in a given run. Not every house has candy every game. The streets should probably layout differently each game. Any house with candy has a pumpkin in the yard, and once you trick-or-treat there with the costume that house likes best, it becomes a jack-o-lantern so you know, and you get that jack-o-lantern in your jack collection. For a given run you can solve it by properly matching up enough houses. In early runs you may only need 10, but as you do better there are more. More houses offer candy on future runs, but you need more jack-o-lanterns to solve that board. it's fundamentally a puzzle game in which you're trying to match the costume to the house while keeping the most candy and there should always be the right costumes on the board to fulfill enough houses and you can always get more candy by re-trick-or-treating a house after a while, so you can always solve a board, but it gets harder as there are more kids and you need more houses. There should be music and effects and some costumes should have fun powers. Once you've gotten a house's jack-o-lantern instead of having a pumpkin it starts with that jack, just not lit yet, and if you go near it it'll let you just switch to the right costume, so you don't have to resolve every house every time if you don't want. In the final run you use every costume and match it to the right house and all the kids dance with you Thriller style and you all share the massive candy haul or something.
 
-After playing it, there was one follow-up request:
+After playing it, there were two follow-up requests:
 
 > The costumes in the collection look great, but while walking around they all have some blue around the edges. Why? Please fix.
 
 (The game had been adding a moonlit blue rim to every kid so dark costumes
 would stand out at night. It looked more like a fringe than moonlight, so it's
 gone.)
+
+> /gamegen --feedback on --publish --no-confirm
+
+(That added the "Report a bug" button, which turns a player's report into an
+issue on this repo, with a screenshot of the moment, and put the update online.)
 
 That's it: no hand-drawn art and no hand-written code. From the first request,
 gamegen wrote a design and had a team of reviewer agents (a player, a builder

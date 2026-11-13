@@ -39,12 +39,18 @@ export const input = {
   },
 };
 
+// While the bug-report form is open, the player is typing: the game leaves every input alone.
+const reportEl = () => document.getElementById('report');
+const forReport = e => { const fb = reportEl(); return !!fb && (e.composedPath?.().includes(fb) || document.activeElement === fb); };
+
 function first() {
   if (input.onFirstInput) { const f = input.onFirstInput; input.onFirstInput = null; f(); }
 }
 
 export function initInput(canvas, buttons) {
   addEventListener('keydown', e => {
+    if (forReport(e)) return;
+    if (e.ctrlKey || e.metaKey) return;   // browser shortcuts (and Ctrl+Shift+F, the bug report) aren't game keys
     const a = KEYMAP[e.code];
     if (PREVENT.has(e.code)) e.preventDefault();
     first();
@@ -62,6 +68,7 @@ export function initInput(canvas, buttons) {
 
   // Pointer: taps for UI, thumbstick on the left part of the screen when in touch mode.
   canvas.addEventListener('pointerdown', e => {
+    if (forReport(e)) return;
     first();
     if (e.pointerType === 'touch' && !input.touchMode) setTouchMode(true);
     if (input.touchMode && input.stickEnabled && e.clientX < innerWidth * 0.45 && !input.stick.active) {
@@ -89,6 +96,7 @@ export function initInput(canvas, buttons) {
   canvas.addEventListener('pointercancel', endStick);
   for (const [el, action] of buttons) {
     el.addEventListener('pointerdown', e => {
+      if (forReport(e)) return;
       first();
       if (e.pointerType === 'touch' && !input.touchMode) setTouchMode(true);
       input.pressed.add(action); input.held.add(action);
@@ -99,7 +107,7 @@ export function initInput(canvas, buttons) {
     el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('pointerleave', up);
   }
   for (const ev of ['touchstart', 'touchmove', 'touchend', 'gesturestart', 'dblclick', 'contextmenu'])
-    document.addEventListener(ev, e => { if (e.target.closest?.('canvas, .tbtn, #touch')) e.preventDefault(); }, { passive: false });
+    document.addEventListener(ev, e => { if (forReport(e)) return; if (e.target.closest?.('canvas, .tbtn, #touch')) e.preventDefault(); }, { passive: false });
   if (matchMedia('(pointer: coarse)').matches) setTouchMode(true);
 }
 

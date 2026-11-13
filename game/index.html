@@ -46,6 +46,9 @@
   @media (pointer: coarse), (max-width: 600px) { .tlink { font-size: 11px; padding: 6px; } }
   /* narrow screens: sit just above the progress bar at the bottom of the title */
   @media (max-width: 600px) { .tlink { bottom: calc(env(safe-area-inset-bottom) + 40px); } }
+  /* the bug-report form: typing and touch work inside it */
+  gh-feedback { -webkit-user-select: text; user-select: text; touch-action: auto; -webkit-touch-callout: default;
+    --gh-feedback-bg: #1b1533; --gh-feedback-text: #f2ead8; --gh-feedback-border: #5a4a80; --gh-feedback-input-bg: #140f24; }
 </style>
 </head>
 <body>
@@ -58,6 +61,21 @@
 <div id="loading">Carving pumpkins…</div>
 <a class="tlink" id="linkSite" href="https://synapticnoise.com/">synapticnoise.com</a>
 <a class="tlink" id="linkGit" href="https://github.com/zeveck/porchlight" target="_blank" rel="noopener" title="Porchlight on GitHub: how it was made" aria-label="Porchlight on GitHub: how it was made">GitHub</a>
+<script>
+  // Ctrl+Shift+F opens the bug report from anywhere, even if the game itself is stuck.
+  addEventListener('keydown', (e) => {
+    if (!e.ctrlKey || !e.shiftKey || e.altKey || e.metaKey || e.key.toLowerCase() !== 'f') return;
+    const fb = document.getElementById('report');
+    if (!fb?.getAttribute('repo') || document.activeElement === fb) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    try { window.reportShortcut?.(); } catch {}
+    fb.open();
+  }, true);
+</script>
 <script type="module" src="src/main.js"></script>
+<script type="module" src="vendor/gh-feedback.js"></script>
+<gh-feedback id="report" trigger="none" repo="zeveck/porchlight" template="bug.yml"
+  types="bug,feature" theme="dark" color="#f08a24" popup-color="#f08a24"></gh-feedback>
 </body>
 </html>

@@ -68,6 +68,9 @@ const EVENT_SFX = { knock: 'knock', close: 'close', meh: 'meh', eww: 'eww', empt
 
 // ---------- screens ----------
 function go(screen) {
+  // the bug report shows what the player saw: take the picture as the game pauses, drop it on resume
+  if (screen === 'pause' && (G.screen === 'play' || G.screen === 'map')) snapshot();
+  else if (screen !== 'pause' && screen !== 'howto') pauseShot = null;
   G.screen = screen; G.fade = 1; ui.focus = null;
   document.body.classList.toggle('playing', screen === 'play');
   document.body.classList.toggle('title', screen === 'title');
@@ -254,7 +257,7 @@ function drawPlayUi(w) {
 
 function drawPause() {
   ctx.fillStyle = 'rgba(14,11,28,0.7)'; ctx.fillRect(0, 0, LW, LH);
-  const pw = 190, items = 6, ph = 30 + items * 24;
+  const pw = 190, items = showReport ? 7 : 6, ph = 30 + items * 24;
   const px = Math.round(LW / 2 - pw / 2), py = Math.round(LH / 2 - ph / 2);
   ui.panel(px, py, pw, ph);
   ui.text('Paused', LW / 2, py + 18, 12, '#ffd25e', 'center');
@@ -266,6 +269,7 @@ function drawPause() {
   if (B('p-sfx', `Sounds: ${audio.sfxOn ? 'on' : 'off'}`)) { audio.sfxOn = !audio.sfxOn; G.save.settings.sfx = audio.sfxOn; applyVolumes(); duckMusic(true); writeSave(G.save); sfx('ui-click'); }
   if (B('p-home', 'Head home early')) { duckMusic(false); endNight(false); return; }
   if (B('p-quit', 'Quit to title')) { duckMusic(false); writeSave(G.save); go('title'); return; }
+  if (showReport && B('p-report', 'Report a bug')) { sfx('ui-click'); openReport(); }
 }
 
 // title-style backdrop with the generated art and a few costumed kids strolling
@@ -323,6 +327,8 @@ function drawTitle() {
   if (ui.button('t-coll', 'Collection', x, y, bw, bh)) { sfx('ui-click'); go('collection'); }
   y += bh + 6;
   if (ui.button('t-how', 'How to play', x, y, bw, bh)) { sfx('ui-click'); G.returnTo = 'title'; G.howPage = 0; go('howto'); }
+  y += bh + 6;
+  if (showReport && ui.button('t-report', 'Report a bug', x, y, bw, bh)) { sfx('ui-click'); openReport(); }
   const jacks = G.save.jacks.length, cos = G.save.wardrobe.length;
   const cl = `Jacks ${jacks}/50 · Costumes ${cos}/50`, cw2 = ui.measure(cl, 8) + 12;
   ctx.fillStyle = 'rgba(20,15,36,0.75)'; ctx.fillRect(Math.round(LW / 2 - cw2 / 2), LH - safe.b - 17, Math.round(cw2), 12);
@@ -474,6 +480,7 @@ function drawHowto() {
     sfx('ui-click');
     if (last) { G.save.seenHowTo = true; writeSave(G.save); go(G.returnTo === 'pause' ? 'pause' : 'title'); if (G.returnTo === 'pause') duckMusic(true); } else G.howPage++;
   }
+  if (showReport && !input.touchMode) ui.text('Ctrl+Shift+F: report a bug', LW / 2, by + 12, 7, '#b0a8c8', 'center');
   if (input.consume('back')) go(G.returnTo === 'pause' ? 'pause' : 'title');
 }
 
@@ -525,6 +532,47 @@ addEventListener('blur', () => { if (G.screen === 'play') { go('pause'); duckMus
 for (const a of document.querySelectorAll('.tlink')) {
   for (const ev of ['pointerdown', 'pointerup', 'mousedown', 'touchstart', 'click']) a.addEventListener(ev, e => e.stopPropagation());
   a.addEventListener('click', () => setTimeout(() => a.blur(), 0));
+}
+
+// ---------- bug reports ("Report a bug", and Ctrl+Shift+F) ----------
+const fb = document.getElementById('report');
+const FB_KEY = 'porchlight-feedback';
+if (params.has('feedback')) {
+  try {
+    if (params.get('feedback') === 'off') localStorage.removeItem(FB_KEY);
+    else localStorage.setItem(FB_KEY, '1');
+  } catch {}
+}
+const FEEDBACK = 'on';
+const showReport = !!fb?.getAttribute('repo') &&
+  (FEEDBACK === 'on' || (() => { try { return localStorage.getItem(FB_KEY) === '1'; } catch { return false; } })());
+let pauseShot = null;
+function snapshot() { pauseShot = new Promise(r => cv.toBlob(r, 'image/png')); }
+function openReport() { input.held.clear(); input.pressed.clear(); input.stick.active = false; fb.open(); }
+window.reportShortcut = () => { if (G.screen === 'play' || G.screen === 'map') { go('pause'); duckMusic(true); } input.held.clear(); input.stick.active = false; };
+const reportErrors = [];
+const keepError = m => { reportErrors.push(String(m).replace(/\s+/g, ' ').slice(0, 200)); reportErrors.splice(0, reportErrors.length - 5); };
+addEventListener('error', e => keepError(e.message));
+addEventListener('unhandledrejection', e => keepError(e.reason?.message ?? e.reason));
+const flat = v => String(v).replace(/\s+/g, ' ');
+if (fb) {
+  fb.getScreenshot = () => pauseShot ?? new Promise(r => cv.toBlob(r, 'image/png'));
+  fb.getContext = () => {
+    const st = window.__game?.state?.() ?? {};
+    const brief = { screen: st.screen, night: st.night, lit: st.lit, need: st.need, candy: st.candy, costume: st.player?.costume, tile: st.player ? `${st.player.tx},${st.player.ty}` : undefined, dialog: st.dialog?.type, costumes: st.wardrobe, jacks: st.jacks };
+    return {
+      game: 'Porchlight',
+      address: location.origin + location.pathname,
+      updated: document.lastModified,
+      build: window.desktop ? `desktop app (${window.desktop.platform})` : 'web',
+      browser: navigator.userAgent,
+      screen: `${innerWidth}x${innerHeight} @${devicePixelRatio}x`,
+      input: st.touch ? 'touch' : 'keyboard and mouse',
+      state: flat(JSON.stringify(brief)),
+      errors: reportErrors.join(' | ') || 'none',
+    };
+  };
+  if (window.desktop) fb.openLink = url => { window.open(url, '_blank'); return true; };
 }
 
 // ---------- boot ----------
