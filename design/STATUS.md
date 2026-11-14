@@ -5,6 +5,7 @@
 
 ## Later requests
 - `/gamegen --feedback on --publish --no-confirm` (run for the owner on 2026-11-13): add "Report a bug" (player bug reports as GitHub issues) and publish the update.
+- 2026-11-14: Report a bug: updated to the fixed form (gh-feedback 2026.11.14)
 
 ## Settings
 - Platform: both (default) · Target: web (default) · Scope: medium (default; the request is content-heavy, so 50 costumes are made in sprite sheets) · Budget: $20 (default) · Rounds: 2
